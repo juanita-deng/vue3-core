@@ -1,2 +1,3 @@
 const a = 1
-export {a} 
+let test = 'juaita'
+export {a,test} 

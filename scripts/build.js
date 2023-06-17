@@ -2,7 +2,6 @@
 
 //1.获取打包目录
 const fs = require('fs');
-// import fs from 'fs'
    /**
     * execa是可以调用shell和本地外部程序的javascript封装。会启动子进程执行。支持多操作系统，包括windows。如果父进程退出，则生成的全部子进程都被杀死。
     */
