@@ -105,6 +105,14 @@
 
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true,
+    
+    // 解决引入问题
+    "moduleResolution": "node",
+    "baseUrl": ".",// 根路径
+    "paths": {
+      "@vue/*":["packages/*/src"]
+    }
+                                     /* Skip type checking all .d.ts files. */
   }
 }
