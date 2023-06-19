@@ -1,4 +1,9 @@
-const b = 1
+const b = 'test import from reactive'
+import {reactive,shallowReactive,readonly,shallowReadonly} from './reactive'
 export {
-    b
-} 
+    b,
+    reactive,
+    shallowReactive,
+    readonly,
+    shallowReadonly
+}
