@@ -1,8 +1,5 @@
 import { isObject } from "@vue/share"// 定义的公共方法
-const reactiveHandlers = {}
-const shallowReactiveHandlers = {}
-const readonlyHandlers = {}
-const shallowReadonlyHandlers = {}
+import { reactiveHandlers, shallowReactiveHandlers, readonlyHandlers, shallowReadonlyHandlers }from './baseHandlers'
 
 /**
  * 
