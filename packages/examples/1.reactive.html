@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>reactive examples</title>
+</head>
+<body>
+
+    <script src="../reactivity/dist/reactivity.global.js"></script>
+    <script>
+            /*
+                总结:核心是proxy + 柯里化
+            */
+        const { reactive,readonly,shallowReactive,shallowReadonly} = VueReactivity;
+        // const testReactive = reactive({name:'zs'})
+        // console.log('test--->',testReactive)
+
+        // const testReadonly = readonly({name:'ls'})
+        // testReadonly.name='test readonly'
+
+        const state = {
+            list:[1,2,3],
+            obj:{name:'zs',age:19},
+            name:'test shallowReactive'
+        }
+        const testShallowReactive = shallowReactive(state);
+        console.log('testShallowReactive',testShallowReactive.obj)
+        const testReactive = reactive(state)
+        console.log('testReactive',testReactive)
+
+        
+    </script>
+</body>
+</html>

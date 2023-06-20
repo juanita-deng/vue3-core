@@ -38,4 +38,5 @@ async function build(target) {
 
 // console.log('fs', dirs)
 
-build('share')
+// build('share')
+build('reactivity')

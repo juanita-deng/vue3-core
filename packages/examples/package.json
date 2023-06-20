@@ -1,0 +1,12 @@
+{
+  "name": "@vue/examples",
+  "version": "1.0.0",
+  "main": "index.js",
+  "buildOptions": {
+    "name": "VueExamples",
+    "formats": [
+      "esm-bundler",
+      "cjs"
+    ]
+  }
+}
