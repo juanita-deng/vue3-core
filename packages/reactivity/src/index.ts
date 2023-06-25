@@ -7,3 +7,4 @@ export {
     readonly,
     shallowReadonly
 }
+export {effect} from './effect'

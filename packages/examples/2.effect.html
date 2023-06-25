@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 
+        effect:类似vue2中的watch,默认执行,获取代理的数据ref(执行get,收集effect)
+               1.在试图中获取数据,触发get收集effect 
+               2.修改数据触发set,执行effect
+     -->
+     <div id="app"></div>
+     <script src="../reactivity/dist/reactivity.global.js"></script>
+     <script>
+        const  {reactive,effect} = VueReactivity;
+        const state = reactive({name:'zs',age:19,sex:'male'})
+        effect(() => {//默认立即执行  
+            // app.innerHTML = state.name + ' ' + state.age// 触发get收集effect
+            state.sex// effect1
+            effect(() => { // effect2  问题:嵌套的effect非同一个effect
+                state.age// effect2
+            })
+            console.log(400)
+            state.name// effect1
+        },{
+            lazy:false// 默认false,  true懒加载(不立即执行)
+        })
+        setTimeout(() => {
+            state.name = 'juanita'// 触发set,执行effect
+        }, 1000);
+     </script>
+</body>
+</html>

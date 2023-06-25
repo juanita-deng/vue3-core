@@ -1,5 +1,7 @@
 import { isObject } from "@vue/share";
 import { reactive, readonly } from './index'
+import { TrackOpTypes } from './operations'
+import { track } from './effect'
 //柯里化函数
  function createGetter(isReadonly=false,shallow=false){
     // const state = reactive({name:'zs'})
@@ -8,7 +10,8 @@ import { reactive, readonly } from './index'
         const res = Reflect.get(target, key, receiver)// res👎属性值:即target[key]
         //不是只读的话,收集依赖
         if(!isReadonly){
-            //收集依赖 effect(watcher)
+            //收集依赖 effect(watcher),等数据变化后更新视图
+            track(target, TrackOpTypes.GET,key)
         }
         //若是浅层响应,直接返回结果(对应的value)  eg: state:{ list:{age:12},datas:'123'}
         if(shallow){
