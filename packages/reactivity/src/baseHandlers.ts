@@ -1,7 +1,7 @@
-import { isObject } from "@vue/share";
+import { isArray, isObject, isIntegerKey, hasOwn, hasChange  } from "@vue/share";
 import { reactive, readonly } from './index'
-import { TrackOpTypes } from './operations'
-import { track } from './effect'
+import { TrackOpTypes, TriggerOpTypes } from './operations'
+import { track, trigger } from './effect'
 //柯里化函数
  function createGetter(isReadonly=false,shallow=false){
     // const state = reactive({name:'zs'})
@@ -31,6 +31,21 @@ import { track } from './effect'
 function createSetter(shallow=false){
     return function set(target,key,value,receiver){
         const res = Reflect.set(target,key,value,receiver)// 设置最新的值
+        // 注意判断:1.target的内容是数组还是对象  2.是添加值还是修改值  proxy可以代理数组和对象
+           // 1.获取老值
+           const oldValue = target[key]
+           // 2.判断内容 [1,2,3] ==》 ‘1’:1  ‘2’:2 ...  Number(key) < target.length true:说明是修改 false:说明是新增  hasOwn:如果是对象
+        const hasKey = isArray(target) && isIntegerKey(key) ? Number(key) < target.length :hasOwn(target, key)
+           // 2.1.没有key就是新增
+           if(!hasKey){
+             trigger(target,TriggerOpTypes.ADD,key,value)
+           } else {
+               //2.2.1修改的时候,新值和旧值一样(则不需要修改,性能优化)
+               // 2.2.有key就是修改
+               if(!hasChange(value,oldValue)){
+                   trigger(target, TriggerOpTypes.SET, key, oldValue)
+               }
+           }
         // 触发更新进行设置
         return res;
 
