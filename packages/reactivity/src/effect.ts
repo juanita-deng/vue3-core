@@ -9,11 +9,23 @@ export function effect(fn, options: any = {}){
     return effect
 }
 let activeEffect;// 保存当前的effect
+let effectStack =[];// 定义一个栈结构
 function createReactEffect(fn,options){
     const effect = function reactiveEffect(){// 响应式的effect
-        fn()// 执行用户传入的方法
+        if(!effectStack.includes(effect)){//保证effect没有加入过栈中
+            try {
+                //入栈
+                effectStack.push(effect)
+                activeEffect = effect;
+                fn()// 执行用户传入的方法
+            } finally {// 不管前面结果如何都会向下执行到这里
+                //出栈
+                effectStack.pop();
+                activeEffect = effectStack[effectStack.length - 1]
+            }
+
+        }
     }
-    activeEffect = effect;
     // 定义响应effect的相关属性
     let uid
     // 区别effect
@@ -29,15 +41,37 @@ function createReactEffect(fn,options){
 }
 
 // 3.收集effect,在获取数据的时候触发get
+const targetMap = new WeakMap();// 创建结构表
 export function track(target,type,key){
-    console.log(activeEffect, target, type, key)
+    // console.log(activeEffect, target, type, key)
+    // 没有在effect中使用   
+    if(activeEffect === undefined) return
+    // key和effect一一对应,即 key(target) ==> 属性[effect]
+    // 有在effect中使用 获取effect: {target:值:(name)} --> {target:dep}
+    // 值中没有这个属性,则添加这个值
+    let depMap =  targetMap.get(target)
+    if(!depMap){
+        // 值中有这个属性,则获取这个属性
+        targetMap.set(target,(depMap = new Map));// 添加值
+    }
+    let dep = depMap.get(key)// { name:[] } 监听key值有没有
+    if(!dep){
+        // 没有这个属性就添加属性 {name:[]}
+        depMap.set(key,(dep = new Set))
+    }
+    if(!dep.has(activeEffect)){
+        dep.add(activeEffect)// 收集effect
+    }
+    console.log('targetMap',targetMap)
 }
-// 问题: 嵌套的effect非同一个effect
-// effect(() => {//默认立即执行  
+// 问题: 1.嵌套的effect非同一个effect(树形结构)
+// effect(() => {//默认立即执行   入栈:[effect1,effect2] ------->出栈:[effect1]
 //     state.sex// effect1
 //     effect(() => { // effect2  
 //         state.age// effect2
 //     })
 //     console.log(400)
 //     state.name// effect1
+//     state.a // 10 收集依赖effect1
+//     state.a++ // 10 11 收集的依然是effect1
 // })
