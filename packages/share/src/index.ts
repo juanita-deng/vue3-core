@@ -28,4 +28,5 @@ const hasOwnProperty = Object.prototype.hasOwnProperty
 export const hasOwn = (val,key) => hasOwnProperty.call(val, key)
 
 // 判断新旧值是否一致
-export const hasChange = (val,oldValue) => val !== oldValue;
+// export const hasChange = (val, oldValue) => val !== oldValue;
+export const hasChange = (val, oldValue) => !Object.is(val, oldValue);

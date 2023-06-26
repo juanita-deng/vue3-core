@@ -62,10 +62,27 @@ export function track(target,type,key){
     if(!dep.has(activeEffect)){
         dep.add(activeEffect)// 收集effect
     }
-    console.log('targetMap',targetMap)
+    // console.log('targetMap',targetMap)
 }
-export function trigger(target,type,key,value){
-    
+export function trigger(target,type,key,newValue?,oldValue?){
+    console.log('123?', target, type, key, newValue , oldValue)
+    console.log('targetMap',targetMap)// 收集的依赖 map => {target:map{key => set}}
+    // 获取收集的依赖对应的map
+    const depMap = targetMap.get(target)// map
+    // 没有就返回
+    if(!depMap) return
+    // 有就执行
+    const effectSet = new Set()
+      // 如果有多个同时修改一个值,并且相同,set可以过滤重复的值
+    const add = (effectAdd) => {
+        if(effectAdd){
+            effectAdd.forEach((effect) => effectSet.add(effect) )
+        }
+    }
+    add(depMap.get(key))// depMap.get(key) set[] 获取当前属性的effect
+    // 执行
+    effectSet.forEach((effect:any) => effect())
+
 }
 // 问题: 1.嵌套的effect非同一个effect(树形结构)
 // effect(() => {//默认立即执行   入栈:[effect1,effect2] ------->出栈:[effect1]

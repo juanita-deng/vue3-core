@@ -15,7 +15,7 @@
      <script src="../reactivity/dist/reactivity.global.js"></script>
      <script>
         const  {reactive,effect} = VueReactivity;
-        const state = reactive({name:'zs',age:19,sex:'male'})
+        const state = reactive({name:'zs',age:19,sex:'male',list:[1,2,3]})
         // effect(() => {//默认立即执行  
         //     // app.innerHTML = state.name + ' ' + state.age// 触发get收集effect
         //     state.sex// effect1
@@ -36,8 +36,11 @@
             state.age
         })
         effect(() => {
-            state.name;// 同一个effect,会被去重
-            state.name;// 同一个effect,会被去重
+            state.name = 'ls';// 修改 同一个effect,会被去重
+            state.list[4] = 'bmw';// 新增
+            state.name = 'ls';// 同一个effect,会被去重
+            state.name = 'ls';// 同一个effect,会被去重
+            state.name = 'ls';// 同一个effect,会被去重
         })
      </script>
 </body>
