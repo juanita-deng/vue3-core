@@ -35,7 +35,7 @@ function createSetter(shallow=false){
            const oldValue = target[key]
            // 2.判断内容 [1,2,3] ==》 ‘1’:1  ‘2’:2 ...  Number(key) < target.length true:说明是修改 false:说明是新增  hasOwn:如果是对象
            const hasKey = isArray(target) && isIntegerKey(key) ? Number(key) < target.length :hasOwn(target, key)
-           const res = Reflect.set(target, key, value, receiver)// 设置最新的值
+           const res = Reflect.set(target, key, value, receiver)// 设置最新的值(注意顺序)
            // 2.1.没有key就是新增
            if(!hasKey){
              trigger(target,TriggerOpTypes.ADD,key,value)

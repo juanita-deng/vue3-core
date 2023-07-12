@@ -1,4 +1,8 @@
 // 1.定义effect,实现响应式数据
+
+import { isArray, isIntegerKey } from "@vue/share";
+import { TriggerOpTypes } from "./operations";
+
   //effect:收集依赖,更新视图
 export function effect(fn, options: any = {}){
     // 判断若传人的参数不是懒加载,则默认立即执行
@@ -65,21 +69,45 @@ export function track(target,type,key){
     // console.log('targetMap',targetMap)
 }
 export function trigger(target,type,key,newValue?,oldValue?){
-    console.log('123?', target, type, key, newValue , oldValue)
+    // console.log('123?', target, type, key, newValue , oldValue)
     console.log('targetMap',targetMap)// 收集的依赖 map => {target:map{key => set}}
     // 获取收集的依赖对应的map
-    const depMap = targetMap.get(target)// map
+    const depsMap = targetMap.get(target)// map
     // 没有就返回
-    if(!depMap) return
+    if(!depsMap) return
     // 有就执行
-    const effectSet = new Set()
-      // 如果有多个同时修改一个值,并且相同,set可以过滤重复的值
+    // const effects = depsMap.get(key)// set[]
+    const effectSet = new Set()// 好处:避免重复(如果有多个同时修改一个值,并且相同,set可以过滤重复的值)
     const add = (effectAdd) => {
         if(effectAdd){
             effectAdd.forEach((effect) => effectSet.add(effect) )
         }
     }
-    add(depMap.get(key))// depMap.get(key) set[] 获取当前属性的effect
+    // 处理数组  
+    //修改数组的length属性时:  key === 'length'
+    if(key === 'length' && isArray(target)){
+        depsMap.forEach((dep,key) => {
+            // console.log('depsMap',depsMap)
+            console.log(key,newValue)
+            // 如果更改的长度 小于收集的索引,那么这个索引需要重新执行这个方法(effect)  [1,2,3] ==》 length = 1
+            if(key === 'length' ||  key >= newValue){
+                add(dep)
+            }
+        })
+    } else {
+        //可能是对象
+        if(key !== undefined){
+            add(depsMap.get(key))// depsMap.get(key) set[] 获取当前属性的effect
+        }
+        // 数组 修改索引
+        switch (type) {
+            case TriggerOpTypes.ADD:
+                if (isArray(target) && isIntegerKey(key)){
+                    add(depsMap.get('length'))
+                }
+        }
+
+    }
     // 执行
     effectSet.forEach((effect:any) => effect())
 

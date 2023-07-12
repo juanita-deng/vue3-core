@@ -34,13 +34,22 @@
         effect(() => {
             state.name;
             state.age
+            // app.innerHTML = state.name + '----->' + state.list.length
+            app.innerHTML = state.name + '----->' + state.list[2] // 当没有时,应处理成显示undefined
+            // app.innerHTML = state.name + '----->' + state.list
         })
         effect(() => {
-            state.name = 'ls';// 修改 同一个effect,会被去重
-            state.list[4] = 'bmw';// 新增
-            state.name = 'ls';// 同一个effect,会被去重
-            state.name = 'ls';// 同一个effect,会被去重
-            state.name = 'ls';// 同一个effect,会被去重
+            setTimeout(() => {
+                // state.name = 'ls';// 修改 同一个effect,会被去重
+                // statee.age = 123;// 没有,应该报错
+                // state.list[4] = 'bmw';// 新增
+                state.list.length = 1;// 删除
+                // state.list[100] =100// 修改
+                // state.name = 'ls';// 同一个effect,会被去重
+                // state.name = 'ls';// 同一个effect,会被去重
+                // state.name = 'ls';// 同一个effect,会被去重
+            }, 1000);
+            // console.log('list',state.list)
         })
      </script>
 </body>
