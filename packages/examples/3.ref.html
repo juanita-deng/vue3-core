@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ref</title>
+</head>
+<body>
+     <div id="app"></div>
+     <script src="../reactivity/dist/reactivity.global.js"></script>
+     <script>
+        /*
+          ref:1.就是将简单的数据类型实现代理,原理是通过Object.defineProperty()
+              2.返回值是一个实例对象,且有一个属性为value,为代理的原理的值.
+               const name = ref('juanita')// 返回一个实例对象,添加一个value就是值
+        */
+       let {reactive,effect,ref} =VueReactivity;
+       let name = ref('juanita')
+       effect(() => {
+           console.log('name',name)
+           app.innerHTML = name.value
+        })
+       setTimeout(() => {
+          name.value = 'hello vue3'
+       }, 1000);
+     </script>
+</body>
+</html>
